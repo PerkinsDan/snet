@@ -1,11 +1,21 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "next/font/google";
+import styles from "@/styles/Home.module.css";
+import { PrismaClient } from "@prisma/client";
 
-const inter = Inter({ subsets: ['latin'] })
+export async function getStaticProps() {
+  const prisma = new PrismaClient();
+  const posts = await prisma.post.findMany();
 
-export default function Home() {
+  return {
+    props: { posts },
+  };
+}
+
+const inter = Inter({ subsets: ["latin"] });
+
+export default function Home({ posts }: any) {
   return (
     <>
       <Head>
@@ -26,7 +36,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              By{' '}
+              By{" "}
               <Image
                 src="/vercel.svg"
                 alt="Vercel Logo"
@@ -119,5 +129,5 @@ export default function Home() {
         </div>
       </main>
     </>
-  )
+  );
 }
