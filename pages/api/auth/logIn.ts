@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import bcrypt from "bcrypt";
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,7 +23,9 @@ export default async function handler(
         return res.status(400).json({ errors: ["User doesn't exist"] });
       });
 
-    if (user?.password !== password) {
+    const passwordsMatch = await bcrypt.compare(password, user?.password || "");
+
+    if (!passwordsMatch) {
       return res.status(400).json({ errors: ["Password is incorrect"] });
     }
 

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import bcrypt from "bcrypt";
 
 export default async function handler(
   req: NextApiRequest,
@@ -36,12 +37,15 @@ export default async function handler(
       return res.status(400).json({ errors: ["User already exists"] });
     }
 
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     await prisma.user.create({
       data: {
         firstName,
         lastName,
         email,
-        password,
+        password: hashedPassword,
       },
     });
 
