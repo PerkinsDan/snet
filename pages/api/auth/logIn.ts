@@ -18,7 +18,7 @@ export default async function handler(
           password: true,
         },
       })
-      .catch((err) => {
+      .catch(() => {
         return res.status(400).json({ errors: ["User doesn't exist"] });
       });
 
