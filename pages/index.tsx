@@ -1,5 +1,6 @@
 import Head from "next/head";
 import SignUp from "@/components/forms/SignUp";
+import LogIn from "@/components/forms/LogIn";
 
 export default function Home({ posts }: any) {
   return (
@@ -13,6 +14,7 @@ export default function Home({ posts }: any) {
       <main>
         <h1>Index</h1>
         <SignUp />
+        <LogIn />
       </main>
     </>
   );
