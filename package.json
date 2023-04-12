@@ -13,7 +13,9 @@
     "@clerk/nextjs": "^4.16.1",
     "@clerk/themes": "^1.6.0",
     "@prisma/client": "^4.11.0",
+    "dayjs": "^1.11.7",
     "next": "^13.2.4",
+    "prop-types": "^15.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "zod": "^3.21.4"

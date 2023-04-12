@@ -1,8 +1,48 @@
 import { SignIn, SignOutButton, useUser } from "@clerk/nextjs";
-import { type NextPage } from "next";
+import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
+import dayjs from "../../lib/dayjs";
 
-const Home: NextPage = () => {
+const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || "";
+
+type Props = {
+    feed: Post[];
+};
+
+const Post = (props: Post) => {
+    const { post, author } = props;
+    return (
+        <div className="flex items-center gap-3 border-b border-slate-800 p-4">
+            <Image
+                src={author.profileImageUrl}
+                alt="profile"
+                height={50}
+                width={50}
+                className="rounded-full"
+            />
+            <div className="flex flex-col">
+                <p>
+                    <span className="font-bold">{`${author.firstName} ${author.lastName}`}</span>{" "}
+                    · {`${dayjs(post.createdAt).fromNow()} `}
+                </p>
+                <p>{post.content}</p>
+            </div>
+        </div>
+    );
+};
+
+const Feed = ({ feed }: Props) => {
+    return (
+        <div className="border-x border-slate-800">
+            {feed.map((post) => (
+                <Post key={post.post.id} {...post} />
+            ))}
+        </div>
+    );
+};
+
+const Home: NextPage<Props> = ({ feed }) => {
     const user = useUser();
 
     return (
@@ -27,7 +67,10 @@ const Home: NextPage = () => {
                             <SignIn />
                         </>
                     ) : (
-                        <SignOutButton />
+                        <>
+                            <Feed feed={feed} />
+                            <SignOutButton />
+                        </>
                     )}
                 </div>
             </main>
@@ -36,3 +79,21 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+    let feed: Post[] = [];
+
+    try {
+        await fetch(`${NEXT_PUBLIC_URL}/api/posts`)
+            .then((res) => res.json())
+            .then((json: Post[]) => {
+                feed = json;
+            });
+    } catch (error) {
+        console.error(error);
+    }
+
+    return {
+        props: { feed },
+    };
+};

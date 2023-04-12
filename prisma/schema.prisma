@@ -10,8 +10,9 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
+model Post {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    content   String
+    authorId  String
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 }
