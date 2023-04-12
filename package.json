@@ -10,6 +10,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.16.1",
+    "@clerk/themes": "^1.6.0",
     "@prisma/client": "^4.11.0",
     "next": "^13.2.4",
     "react": "18.2.0",
@@ -17,6 +19,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@clerk/types": "^3.35.0",
     "@types/eslint": "^8.21.3",
     "@types/node": "^18.15.5",
     "@types/prettier": "^2.7.2",
