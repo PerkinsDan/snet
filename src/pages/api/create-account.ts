@@ -6,12 +6,7 @@ type AccountInfo = {
     userId: string;
 };
 
-export default async function handle(
-    req: NextApiRequest,
-    res: NextApiResponse
-) {
-    const { school, userId } = req.body as AccountInfo;
-
+const fetchSchoolId = async (school: string) => {
     const schoolId = await prisma.school.findUnique({
         where: {
             name: school,
@@ -21,14 +16,31 @@ export default async function handle(
         },
     });
 
+    return schoolId;
+};
+
+
+export default async function handle(
+    req: NextApiRequest,
+    res: NextApiResponse
+) {
+    const { school, userId } = req.body as AccountInfo;
+
+    let schoolId = await fetchSchoolId(school);
+
     if (!schoolId) {
-        res.status(404).json({ error: "School not found" });
-        return;
+        await prisma.school.create({
+            data: {
+                name: school,
+            },
+        });
+
+        schoolId = await fetchSchoolId(school);
     }
 
     const result = await prisma.profile.create({
         data: {
-            schoolId: schoolId.id,
+            schoolId: (schoolId ? schoolId.id :  ""),
             userId,
         },
     });

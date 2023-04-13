@@ -1,8 +1,14 @@
 import { useUser } from "@clerk/nextjs";
+import prisma from "lib/prisma";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
 
-const CreateAccount = () => {
+type Props = {
+    schools: School[];
+};
+
+const CreateAccount = ({ schools }: Props) => {
     const [school, setSchool] = useState("");
 
     const router = useRouter();
@@ -23,11 +29,10 @@ const CreateAccount = () => {
                 body: JSON.stringify(body),
             });
 
-            await router.push('/')
+            await router.push("/");
         } catch (error) {
             console.error(error);
         }
-
     };
 
     return (
@@ -40,8 +45,14 @@ const CreateAccount = () => {
                     id="school"
                     name="school"
                     value={school}
+                    list="schools"
                     onChange={(e) => setSchool(e.target.value)}
                 />
+                <datalist id="schools">
+                    {schools.map((school) => (
+                        <option key={school.id} value={school.name} />
+                    ))}
+                </datalist>
                 <button type="submit">Create</button>
             </form>
         </div>
@@ -49,3 +60,11 @@ const CreateAccount = () => {
 };
 
 export default CreateAccount;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+    const schools = await prisma.school.findMany();
+
+    return {
+        props: { schools },
+    };
+};

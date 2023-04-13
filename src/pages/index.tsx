@@ -83,15 +83,12 @@ const PostCreator = () => {
 };
 
 const PublicFeed = ({ feed }: Props) => {
-    console.log('public feed', feed)
-
     return (
         <div>
             <h1>Public Feed</h1>
             <div className="border-x border-slate-800">
                 {feed.map((post) => {
-                    console.log(post)
-                    return <Post key={post.post.id} {...post} />
+                    return <Post key={post.post.id} {...post} />;
                 })}
             </div>
         </div>
@@ -100,8 +97,6 @@ const PublicFeed = ({ feed }: Props) => {
 
 const PrivateFeed = ({ feed }: Props) => {
     const privateFeed = feed.filter(({ post }) => post.public === false);
-
-    console.log('privateFeed', privateFeed)
 
     return (
         <div>
@@ -212,35 +207,37 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     const profiles = await prisma.profile.findMany({});
 
-    const feed = posts.map((post) => {
-        const author = users.find((user) => user.id === post.authorId);
+    const feed = posts
+        .map((post) => {
+            const author = users.find((user) => user.id === post.authorId);
 
-        if (!author || !author.id) {
-            throw new Error("Author not found");
-        }
+            if (!author || !author.id) {
+                throw new Error("Author not found");
+            }
 
-        const authorSchool = profiles.find(
-            (profile) => profile.userId === author.id
-        )?.schoolId;
+            const authorSchool = profiles.find(
+                (profile) => profile.userId === author.id
+            )?.schoolId;
 
-        const userSchool = profiles.find(
-            (profile) => profile.userId === userId
-        )?.schoolId;
+            const userSchool = profiles.find(
+                (profile) => profile.userId === userId
+            )?.schoolId;
 
-        if (authorSchool !== userSchool && !post.public) {
-            return null;
-        }
+            if (authorSchool !== userSchool && !post.public) {
+                return null;
+            }
 
-        return {
-            post,
-            author: {
-                ...author,
-                firsName: author.firstName,
-                lastName: author.lastName,
-                school: authorSchool,
-            },
-        };
-    }).filter(Boolean);
+            return {
+                post,
+                author: {
+                    ...author,
+                    firsName: author.firstName,
+                    lastName: author.lastName,
+                    school: authorSchool,
+                },
+            };
+        })
+        .filter(Boolean);
 
     return {
         props: { feed },
