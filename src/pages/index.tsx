@@ -7,8 +7,7 @@ import dayjs from "../../lib/dayjs";
 import { type FormEvent, useState } from "react";
 import { clerkClient, getAuth } from "@clerk/nextjs/server";
 import prisma from "../../lib/prisma";
-
-const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || "";
+import { PencilIcon } from "@heroicons/react/24/solid";
 
 type Props = {
     feed: Post[];
@@ -95,6 +94,7 @@ const Feed = ({ feed }: Props) => {
 
 const Home: NextPage<Props> = ({ feed }) => {
     const [showPostCreator, setShowPostCreator] = useState(false);
+    const [showPublicPosts, setShowPublicPosts] = useState(true);
 
     const user = useUser();
 
@@ -127,9 +127,9 @@ const Home: NextPage<Props> = ({ feed }) => {
                                 onClick={() =>
                                     setShowPostCreator(!showPostCreator)
                                 }
-                                className="absolute bottom-4 right-4 h-12 w-12 rounded-full bg-blue-500"
+                                className="absolute bottom-4 right-4 h-12 w-12 flex justify-center items-center rounded-full bg-blue-500"
                             >
-                                !
+                            <PencilIcon className="h-6 w-6 text-white" />
                             </button>
                             <SignOutButton />
                         </>
@@ -156,8 +156,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     if (!userId) {
         return {
-            props: {}
-        }
+            props: {},
+        };
     }
 
     const data = await prisma.post.findMany({});
@@ -179,7 +179,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     const feed = posts.map((post) => {
         const author = users.find((user) => user.id === post.authorId);
-
 
         if (!author || !author.id) {
             throw new Error("Author not found");

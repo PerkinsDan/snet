@@ -12,6 +12,7 @@
   "dependencies": {
     "@clerk/nextjs": "^4.16.1",
     "@clerk/themes": "^1.6.0",
+    "@heroicons/react": "^2.0.17",
     "@prisma/client": "^4.11.0",
     "dayjs": "^1.11.7",
     "next": "^13.2.4",
