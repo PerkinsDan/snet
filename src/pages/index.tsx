@@ -98,6 +98,8 @@ const Home: NextPage<Props> = ({ feed }) => {
 
     const user = useUser();
 
+    if (!feed) feed = [];
+
     const privateFeed = feed.filter(({ post }) => post.public === false);
 
     return (
@@ -125,7 +127,7 @@ const Home: NextPage<Props> = ({ feed }) => {
                         <>
                             <div className="min-h-screen">
                                 <nav className="background-contrast-50 sticky top-0 flex items-center justify-between border-b border-slate-800 p-6 backdrop-blur-xl">
-                                    <h1 className="text-xl text-white font-bold">
+                                    <h1 className="text-xl font-bold text-white">
                                         {showPublicPosts
                                             ? "Public Feed"
                                             : "Private Feed"}
@@ -134,7 +136,7 @@ const Home: NextPage<Props> = ({ feed }) => {
                                         onClick={() =>
                                             setShowPublicPosts(!showPublicPosts)
                                         }
-                                        className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 hover:bg-blue-600 transition"
+                                        className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 transition hover:bg-blue-600"
                                     >
                                         <ArrowsRightLeftIcon className="h-6 w-6 text-white" />
                                     </button>
@@ -146,8 +148,8 @@ const Home: NextPage<Props> = ({ feed }) => {
                                 )}
                             </div>
                             {showPostCreator ? <PostCreator /> : null}
-                            <div className="sticky bottom-0 flex w-full justify-between p-6 background-blur-200 backdrop-blur">
-                                <button className="flex items-center justify-center gap-3 border-slate-800 p-2 rounded-lg shadow shadow-slate-800/50 border">
+                            <div className="background-blur-200 sticky bottom-0 flex w-full justify-between p-6 backdrop-blur">
+                                <button className="flex items-center justify-center gap-3 rounded-lg border border-slate-800 p-2 shadow shadow-slate-800/50">
                                     <Image
                                         src={user.user.profileImageUrl}
                                         alt="profile"
@@ -155,13 +157,15 @@ const Home: NextPage<Props> = ({ feed }) => {
                                         width={40}
                                         className="rounded-full"
                                     />
-                                    <p className="text-white text-light">{user.user.fullName}</p>
+                                    <p className="text-light text-white">
+                                        {user.user.fullName}
+                                    </p>
                                 </button>
                                 <button
                                     onClick={() =>
                                         setShowPostCreator(!showPostCreator)
                                     }
-                                    className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 hover:bg-blue-600 transition"
+                                    className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 transition hover:bg-blue-600"
                                 >
                                     <PencilIcon className="h-6 w-6 text-white" />
                                 </button>
