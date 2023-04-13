@@ -7,7 +7,7 @@ import dayjs from "../../lib/dayjs";
 import { type FormEvent, useState } from "react";
 import { clerkClient, getAuth } from "@clerk/nextjs/server";
 import prisma from "../../lib/prisma";
-import { PencilIcon } from "@heroicons/react/24/solid";
+import { ArrowsRightLeftIcon, PencilIcon } from "@heroicons/react/24/solid";
 
 type Props = {
     feed: Post[];
@@ -82,12 +82,35 @@ const PostCreator = () => {
     );
 };
 
-const Feed = ({ feed }: Props) => {
+const PublicFeed = ({ feed }: Props) => {
+    console.log('public feed', feed)
+
     return (
-        <div className="border-x border-slate-800">
-            {feed.map((post) => (
-                <Post key={post.post.id} {...post} />
-            ))}
+        <div>
+            <h1>Public Feed</h1>
+            <div className="border-x border-slate-800">
+                {feed.map((post) => {
+                    console.log(post)
+                    return <Post key={post.post.id} {...post} />
+                })}
+            </div>
+        </div>
+    );
+};
+
+const PrivateFeed = ({ feed }: Props) => {
+    const privateFeed = feed.filter(({ post }) => post.public === false);
+
+    console.log('privateFeed', privateFeed)
+
+    return (
+        <div>
+            <h1>Private Feed</h1>
+            <div className="border-x border-slate-800">
+                {privateFeed.map((post) => (
+                    <Post key={post.post.id} {...post} />
+                ))}
+            </div>
         </div>
     );
 };
@@ -121,15 +144,27 @@ const Home: NextPage<Props> = ({ feed }) => {
                         </>
                     ) : (
                         <>
-                            <Feed feed={feed} />
+                            <button
+                                onClick={() =>
+                                    setShowPublicPosts(!showPublicPosts)
+                                }
+                                className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500"
+                            >
+                                <ArrowsRightLeftIcon className="h-6 w-6 text-white" />
+                            </button>
+                            {showPublicPosts ? (
+                                <PublicFeed feed={feed} />
+                            ) : (
+                                <PrivateFeed feed={feed} />
+                            )}
                             {showPostCreator ? <PostCreator /> : null}
                             <button
                                 onClick={() =>
                                     setShowPostCreator(!showPostCreator)
                                 }
-                                className="absolute bottom-4 right-4 h-12 w-12 flex justify-center items-center rounded-full bg-blue-500"
+                                className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500"
                             >
-                            <PencilIcon className="h-6 w-6 text-white" />
+                                <PencilIcon className="h-6 w-6 text-white" />
                             </button>
                             <SignOutButton />
                         </>
@@ -205,7 +240,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
                 school: authorSchool,
             },
         };
-    });
+    }).filter(Boolean);
 
     return {
         props: { feed },

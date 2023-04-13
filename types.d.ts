@@ -3,6 +3,7 @@ type Post = {
         id: string;
         content: string;
         authorId: string;
+        public: boolean;
         createdAt: string;
     };
     author: {
