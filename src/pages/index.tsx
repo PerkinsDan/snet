@@ -7,7 +7,11 @@ import dayjs from "../../lib/dayjs";
 import { type FormEvent, useState } from "react";
 import { clerkClient, getAuth } from "@clerk/nextjs/server";
 import prisma from "../../lib/prisma";
-import { ArrowsRightLeftIcon, PencilIcon } from "@heroicons/react/24/solid";
+import {
+    ArrowsRightLeftIcon,
+    PencilIcon,
+    QuestionMarkCircleIcon,
+} from "@heroicons/react/24/outline";
 
 type Props = {
     feed: Post[];
@@ -40,6 +44,7 @@ const PostCreator = () => {
     const [content, setContent] = useState("");
     const [isPublic, setIsPublic] = useState(true);
     const [showPostCreator, setShowPostCreator] = useState(true);
+    const [toolTip, setToolTip] = useState(false);
 
     const { user, isSignedIn } = useUser();
     if (!isSignedIn) return null;
@@ -61,22 +66,50 @@ const PostCreator = () => {
     if (!showPostCreator) return null;
 
     return (
-        <div className={`absolute h-1/2 w-1/2 bg-slate-500`}>
+        <div
+            className={`absolute left-0 top-0 min-h-screen w-full bg-gradient-to-b from-slate-950 to-gray-900`}
+        >
             <form
                 onSubmit={handleSubmit}
-                className="flex flex-col items-center justify-center"
+                className="flex flex-col items-center justify-center gap-8 p-8"
             >
-                <input
-                    type="text"
+                <h1 className="text-white text-2xl font-bold">Create your post:</h1>
+                <textarea
                     onChange={(e) => setContent(e.target.value)}
                     value={content}
+                    placeholder="What's your question?"
+                    className="h-40 w-full border border-slate-800 bg-transparent p-2 max-w-2xl text-white outline-none"
                 />
-                <input
-                    type="checkbox"
-                    onChange={(e) => setIsPublic(e.target.checked)}
-                    checked={isPublic}
-                />
-                <button type="submit">Post</button>
+                <div className="relative flex items-center gap-2">
+                    <input
+                        type="checkbox"
+                        onChange={(e) => setIsPublic(!e.target.checked)}
+                        checked={!isPublic}
+                        className="rounded-full"
+                    />
+                    <label className="text-white">Private</label>
+                    <div className="flex">
+                        <div
+                            onMouseEnter={() => setToolTip(true)}
+                            onMouseLeave={() => setToolTip(false)}
+                        >
+                            <QuestionMarkCircleIcon className="h-6 w-6 text-slate-400" />
+                        </div>
+                        {toolTip && (
+                            <p className="absolute z-10 ml-10 w-max rounded bg-slate-500 p-1 text-sm text-black text-white">
+                                When enabled only people from
+                                <br />
+                                your school can see the post.
+                            </p>
+                        )}
+                    </div>
+                </div>
+                <button
+                    type="submit"
+                    className="rounded border border-slate-800 px-4 py-2 text-white hover:border-slate-400"
+                >
+                    Post
+                </button>
             </form>
         </div>
     );
@@ -84,7 +117,7 @@ const PostCreator = () => {
 
 const Feed = ({ feed }: Props) => {
     return (
-        <div className="border-x border-slate-800 text-slate-200">
+        <div className="min-w-120 border-x border-slate-800 text-slate-200">
             {feed.map((post) => {
                 return <Post key={post.post.id} {...post} />;
             })}
@@ -125,8 +158,8 @@ const Home: NextPage<Props> = ({ feed }) => {
                         </>
                     ) : (
                         <>
-                            <div className="min-h-screen">
-                                <nav className="background-contrast-50 sticky top-0 flex items-center justify-between border-b border-slate-800 p-6 backdrop-blur-xl">
+                            <div className="min-h-screen max-w-2xl">
+                                <nav className="background-contrast-50 sticky top-0 flex items-center justify-between border border-slate-800 p-6 backdrop-blur-xl">
                                     <h1 className="text-xl font-bold text-white">
                                         {showPublicPosts
                                             ? "Public Feed"
