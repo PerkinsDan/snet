@@ -154,6 +154,12 @@ const filterUserForClient = (user: User) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { userId } = getAuth(ctx.req);
 
+    if (!userId) {
+        return {
+            props: {}
+        }
+    }
+
     const data = await prisma.post.findMany({});
 
     // Convert createdAt to ISO string

@@ -1,10 +1,31 @@
-import { withClerkMiddleware } from "@clerk/nextjs/server";
+import { getAuth, withClerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export default withClerkMiddleware((req: NextRequest) => {
-    return NextResponse.next();
-});
+const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || "";
+
+const publicPaths = ['/'];
+
+const isPublic = (path: string) => {
+  return publicPaths.find(x =>
+    path.match(new RegExp(`^${x}$`.replace('*$', '($|/)')))
+  )
+}
+
+export default withClerkMiddleware((request: NextRequest) => {
+  if (isPublic(request.nextUrl.pathname)) {
+    return NextResponse.next()
+  }
+  // if the user is not signed in redirect them to the sign in page.
+  const { userId } = getAuth(request)
+
+  if (!userId) {
+    // redirect the users to /pages/sign-in/[[...index]].ts
+
+    return NextResponse.redirect(`${NEXT_PUBLIC_URL}/`)
+  }
+  return NextResponse.next()
+})
 
 // Stop Middleware running on static files and public folder
 export const config = {
@@ -19,5 +40,6 @@ export const config = {
      */
     "/((?!_next/image|_next/static|favicon.ico|images|assets/*).*)",
     "/",
+    "/create-account",
   ],
 };
