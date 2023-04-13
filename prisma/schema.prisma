@@ -13,6 +13,20 @@ datasource db {
 model Post {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     content   String
+    public    Boolean  @default(true)
     authorId  String
     createdAt DateTime @default(now())
+}
+
+model Profile {
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    school   School @relation(fields: [schoolId], references: [id])
+    schoolId String @db.ObjectId
+    userId   String @unique
+}
+
+model School {
+    id       String    @id @default(auto()) @map("_id") @db.ObjectId
+    name     String
+    profiles Profile[]
 }

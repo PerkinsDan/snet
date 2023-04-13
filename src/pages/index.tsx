@@ -1,9 +1,12 @@
+import { type User } from "@clerk/nextjs/dist/api";
 import { SignIn, SignOutButton, useUser } from "@clerk/nextjs";
 import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import dayjs from "../../lib/dayjs";
 import { type FormEvent, useState } from "react";
+import { clerkClient, getAuth } from "@clerk/nextjs/server";
+import prisma from "../../lib/prisma";
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || "";
 
@@ -36,6 +39,7 @@ const Post = (props: Post) => {
 
 const PostCreator = () => {
     const [content, setContent] = useState("");
+    const [isPublic, setIsPublic] = useState(true);
     const [showPostCreator, setShowPostCreator] = useState(true);
 
     const { user, isSignedIn } = useUser();
@@ -44,7 +48,7 @@ const PostCreator = () => {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        const body = { content, authorId: user.id };
+        const body = { content, isPublic, authorId: user.id };
 
         fetch("/api/post", {
             method: "POST",
@@ -59,11 +63,19 @@ const PostCreator = () => {
 
     return (
         <div className={`absolute h-1/2 w-1/2 bg-slate-500`}>
-            <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center">
+            <form
+                onSubmit={handleSubmit}
+                className="flex flex-col items-center justify-center"
+            >
                 <input
                     type="text"
                     onChange={(e) => setContent(e.target.value)}
                     value={content}
+                />
+                <input
+                    type="checkbox"
+                    onChange={(e) => setIsPublic(e.target.checked)}
+                    checked={isPublic}
                 />
                 <button type="submit">Post</button>
             </form>
@@ -110,9 +122,7 @@ const Home: NextPage<Props> = ({ feed }) => {
                     ) : (
                         <>
                             <Feed feed={feed} />
-                            {showPostCreator ? (
-                                <PostCreator />
-                            ) : null}
+                            {showPostCreator ? <PostCreator /> : null}
                             <button
                                 onClick={() =>
                                     setShowPostCreator(!showPostCreator)
@@ -132,18 +142,65 @@ const Home: NextPage<Props> = ({ feed }) => {
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-    let feed: Post[] = [];
+const filterUserForClient = (user: User) => {
+    return {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profileImageUrl: user.profileImageUrl,
+    };
+};
 
-    try {
-        await fetch(`${NEXT_PUBLIC_URL}/api/posts`)
-            .then((res) => res.json())
-            .then((json: Post[]) => {
-                feed = json;
-            });
-    } catch (error) {
-        console.error(error);
-    }
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const { userId } = getAuth(ctx.req);
+
+    const data = await prisma.post.findMany({});
+
+    // Convert createdAt to ISO string
+    const posts = data.map((item) => ({
+        ...item,
+        createdAt: item.createdAt.toISOString(),
+    }));
+
+    const users = (
+        await clerkClient.users.getUserList({
+            userId: posts.map((post) => post.authorId),
+            limit: 100,
+        })
+    ).map(filterUserForClient);
+
+    const profiles = await prisma.profile.findMany({});
+
+    const feed = posts.map((post) => {
+        const author = users.find((user) => user.id === post.authorId);
+
+
+        if (!author || !author.id) {
+            throw new Error("Author not found");
+        }
+
+        const authorSchool = profiles.find(
+            (profile) => profile.userId === author.id
+        )?.schoolId;
+
+        const userSchool = profiles.find(
+            (profile) => profile.userId === userId
+        )?.schoolId;
+
+        if (authorSchool !== userSchool && !post.public) {
+            return null;
+        }
+
+        return {
+            post,
+            author: {
+                ...author,
+                firsName: author.firstName,
+                lastName: author.lastName,
+                school: authorSchool,
+            },
+        };
+    });
 
     return {
         props: { feed },

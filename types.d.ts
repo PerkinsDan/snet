@@ -12,3 +12,16 @@ type Post = {
         profileImageUrl: string;
     };
 };
+
+type Profile = {
+    id: string;
+    school: School;
+    schoolId: string;
+    userId: string;
+}
+
+type School = {
+    id: string;
+    name: string;
+    profiles: Profile[];
+}
