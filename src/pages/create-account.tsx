@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/nextjs";
 import prisma from "lib/prisma";
-import { GetServerSideProps } from "next";
+import { type GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
 
@@ -36,24 +36,37 @@ const CreateAccount = ({ schools }: Props) => {
     };
 
     return (
-        <div>
-            <h1>Create Profile</h1>
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="school">School</label>
-                <input
-                    type="text"
-                    id="school"
-                    name="school"
-                    value={school}
-                    list="schools"
-                    onChange={(e) => setSchool(e.target.value)}
-                />
-                <datalist id="schools">
-                    {schools.map((school) => (
-                        <option key={school.id} value={school.name} />
-                    ))}
-                </datalist>
-                <button type="submit">Create</button>
+        <div className="flex flex-col items-center justify-center gap-12 text-white">
+            <h1 className="text-xl font-bold">Create Profile: </h1>
+            <form
+                onSubmit={handleSubmit}
+                className="flex flex-col items-center gap-8"
+            >
+                <div className="flex items-center gap-3">
+                    <label htmlFor="school">School: </label>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            id="school"
+                            name="school"
+                            value={school}
+                            list="schools"
+                            onChange={(e) => setSchool(e.target.value)}
+                            className="rounded border border-white bg-transparent"
+                        />
+                        <datalist id="schools">
+                            {schools.map((school) => (
+                                <option key={school.id} value={school.name} />
+                            ))}
+                        </datalist>
+                    </div>
+                </div>
+                <button
+                    type="submit"
+                    className="rounded-lg border border-white px-4 py-2"
+                >
+                    Create
+                </button>
             </form>
         </div>
     );
