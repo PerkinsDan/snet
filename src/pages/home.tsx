@@ -106,7 +106,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         };
     }
 
-    const data = await prisma.post.findMany({});
+    const data = await prisma.post.findMany({
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
 
     // Convert createdAt to ISO string
     const posts = data.map((item) => ({
