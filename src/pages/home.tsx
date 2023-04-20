@@ -23,7 +23,8 @@ const Home = ({ feed }: Props) => {
 
     if (!feed) feed = [];
 
-    const privateFeed = feed.filter(({ post }) => post.public === false);
+    const publicFeed = feed.filter(({ post }) => post.public);
+    const privateFeed = feed.filter(({ post }) => !post.public);
 
     return (
         <>
@@ -40,7 +41,7 @@ const Home = ({ feed }: Props) => {
                     </button>
                 </nav>
                 {showPublicPosts ? (
-                    <Feed feed={feed} />
+                    <Feed feed={publicFeed} />
                 ) : (
                     <Feed feed={privateFeed} />
                 )}
