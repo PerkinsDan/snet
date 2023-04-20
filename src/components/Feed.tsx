@@ -20,12 +20,13 @@ const Post = (props: Post) => {
                     className="rounded-full"
                 />
             </Link>
-            <div className="flex flex-col">
-                <Link href={`/profile/${author.id}`}>
+            <div className="flex flex-col w-full">
+                <Link href={`/profile/${author.id}`} className="flex w-full justify-between">
                     <p>
                         <span className="font-bold">{`${author.firstName} ${author.lastName}`}</span>{" "}
                         · {`${dayjs(post.createdAt).fromNow()} `}
                     </p>
+                    <span className="hidden sm:block">{author.schoolName}</span>
                 </Link>
                 <p>{post.content}</p>
             </div>

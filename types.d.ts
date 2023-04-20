@@ -11,6 +11,7 @@ type Post = {
         firstName: string;
         lastName: string;
         profileImageUrl: string;
+        schoolName: string;
         sameSchool: boolean;
     };
 };

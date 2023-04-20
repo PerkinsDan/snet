@@ -132,6 +132,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     const profiles = await prisma.profile.findMany({});
 
+    const schools = await prisma.school.findMany({});
+
     const feed = posts
         .map((post) => {
             const author = users.find((user) => user.id === post.authorId);
@@ -152,12 +154,17 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
                 return null;
             }
 
+            const schoolName = schools.find(
+                (school) => school.id === authorSchool
+            )?.name;
+
             return {
                 post,
                 author: {
                     ...author,
                     firsName: author.firstName,
                     lastName: author.lastName,
+                    schoolName,
                     sameSchool: authorSchool === userSchool,
                 },
             };
