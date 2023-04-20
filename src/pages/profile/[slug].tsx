@@ -1,7 +1,10 @@
 import { type User } from "@clerk/nextjs/dist/api";
 import { clerkClient, getAuth } from "@clerk/nextjs/server";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 import prisma from "lib/prisma";
 import { type GetServerSideProps } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import Feed from "~/components/Feed";
 
@@ -13,10 +16,31 @@ const Profile = ({ feed }: Props) => {
     const router = useRouter();
     const { slug } = router.query;
 
-    feed = feed.filter((post) => post.author.id === slug)
+    feed = feed.filter((post) => post.author.id === slug);
+
+    const { firstName, lastName, profileImageUrl } = feed[0]?.author || {
+        firstName: "",
+        lastName: "",
+        profileImageUrl: "",
+    };
 
     return (
-        <div>
+        <div className="min-h-screen w-full max-w-2xl">
+            <div className="flex items-center justify-between border border-slate-800 p-8">
+                <Link href="/">
+                    <ArrowUturnLeftIcon className="h-8 w-8 text-white" />
+                </Link>
+                    <h1 className="text-center text-2xl font-bold text-white">
+                        {firstName} {lastName}
+                    </h1>
+                    <Image
+                        src={profileImageUrl}
+                        height={70}
+                        width={70}
+                        alt="Profile picture"
+                        className="rounded-full"
+                    />
+            </div>
             <Feed feed={feed} />
         </div>
     );
