@@ -78,7 +78,9 @@ const Home = ({ feed }: Props) => {
                 </div>
                 <button
                     onClick={() => setShowPostCreator(!showPostCreator)}
-                    className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 transition hover:bg-blue-600"
+                    className={`flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 transition ${
+                        showPostCreator ? "bg-slate-600 hover:bg-slate-800" : "bg-blue-500 hover:bg-blue-700"
+                    }`}
                 >
                     <PencilIcon className="h-6 w-6 text-white" />
                 </button>

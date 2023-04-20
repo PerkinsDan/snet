@@ -1,5 +1,8 @@
 import { useUser } from "@clerk/nextjs";
-import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import {
+    ArrowUturnLeftIcon,
+    QuestionMarkCircleIcon,
+} from "@heroicons/react/24/outline";
 import { useState, type FormEvent } from "react";
 
 const PostCreator = () => {
@@ -31,6 +34,9 @@ const PostCreator = () => {
         <div
             className={`absolute left-0 top-0 min-h-screen w-full bg-gradient-to-b from-slate-950 to-gray-900`}
         >
+            <button onClick={() => setShowPostCreator(false)}>
+                <ArrowUturnLeftIcon className="ml-8 mt-8 h-8 w-8 text-white" />
+            </button>
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col items-center justify-center gap-8 p-8"
