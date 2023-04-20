@@ -10,6 +10,7 @@ type Props = {
 
 const CreateAccount = ({ schools }: Props) => {
     const [school, setSchool] = useState("");
+    const [error, setError] = useState("");
 
     const router = useRouter();
 
@@ -23,13 +24,18 @@ const CreateAccount = ({ schools }: Props) => {
         const body = { school, userId: user.id };
 
         try {
-            await fetch("/api/create-account", {
+            const res = await fetch("/api/create-account", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body),
             });
 
-            await router.push("/");
+            if (res.status === 200) {
+                await router.push("/");
+            } else {
+                const { error } = await res.json() as { error: string };
+                setError(error);
+            }
         } catch (error) {
             console.error(error);
         }
@@ -67,6 +73,9 @@ const CreateAccount = ({ schools }: Props) => {
                 >
                     Create
                 </button>
+                <div className="w-full border-red-500 text-red-500 p-4 rounded border">
+                    {error}
+                </div>
             </form>
         </div>
     );
