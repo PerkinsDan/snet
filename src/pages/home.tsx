@@ -63,7 +63,7 @@ const Home = ({ feed }: Props) => {
                         <p className="text-light text-white">{user.fullName}</p>
                     </button>
                     {showProfile && (
-                        <div className="absolute bottom-full mb-4 flex w-full flex-col rounded-md border border-slate-800 text-center text-white shadow-md  shadow-slate-400/50">
+                        <div className="absolute bottom-full mb-4 flex w-full flex-col rounded-md border border-slate-800 bg-slate-900 text-center text-white shadow-md shadow-slate-400/50">
                             <a
                                 className="border-b border-slate-700 py-2"
                                 href={`/profile/${user.id}`}
@@ -79,7 +79,9 @@ const Home = ({ feed }: Props) => {
                 <button
                     onClick={() => setShowPostCreator(!showPostCreator)}
                     className={`flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 transition ${
-                        showPostCreator ? "bg-slate-600 hover:bg-slate-800" : "bg-blue-500 hover:bg-blue-700"
+                        showPostCreator
+                            ? "bg-slate-600 hover:bg-slate-800"
+                            : "bg-blue-500 hover:bg-blue-700"
                     }`}
                 >
                     <PencilIcon className="h-6 w-6 text-white" />
