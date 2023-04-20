@@ -24,14 +24,14 @@ const Home = ({ feed }: Props) => {
     if (!feed) feed = [];
 
     const publicFeed = feed.filter(({ post }) => post.public);
-    const privateFeed = feed.filter(({ post }) => !post.public);
+    const privateFeed = feed.filter(({ author }) => author.sameSchool);
 
     return (
         <>
             <div className="min-h-screen w-full max-w-2xl">
                 <nav className="background-contrast-50 sticky top-0 flex items-center justify-between border border-slate-800 p-6 backdrop-blur-xl">
                     <h1 className="text-xl font-bold text-white">
-                        {showPublicPosts ? "Public Feed" : "Private Feed"}
+                        {showPublicPosts ? "Public Feed" : "My School Feed"}
                     </h1>
                     <button
                         onClick={() => setShowPublicPosts(!showPublicPosts)}
@@ -158,7 +158,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
                     ...author,
                     firsName: author.firstName,
                     lastName: author.lastName,
-                    school: authorSchool,
+                    sameSchool: authorSchool === userSchool,
                 },
             };
         })
