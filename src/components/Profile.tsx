@@ -27,7 +27,7 @@ const Profile = () => {
                 <div className="absolute bottom-full mb-4 flex w-full flex-col rounded-md border border-slate-800 bg-slate-900 text-center text-white shadow-md shadow-slate-400/50">
                     <a
                         className="border-b border-slate-700 py-2"
-                        href={`/profile/${user.id}`}
+                        href={`/profiles/${user.id}`}
                     >
                         View Profile
                     </a>

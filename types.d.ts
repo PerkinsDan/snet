@@ -14,6 +14,7 @@ type Post = {
         profileImageUrl: string;
         schoolName: string;
         sameSchool: boolean;
+        schoolId: string;
     };
 };
 
@@ -22,16 +23,16 @@ type Profile = {
     school: School;
     schoolId: string;
     userId: string;
-}
+};
 
 type School = {
     id: string;
     name: string;
     profiles: Profile[];
-}
+};
 
 type Subject = {
     id: string;
     name: string;
     posts: Post[];
-}
+};

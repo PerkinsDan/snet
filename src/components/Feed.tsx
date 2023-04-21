@@ -11,7 +11,7 @@ const Post = (props: Post) => {
 
     return (
         <div className="flex gap-3 border-b border-slate-800 p-4">
-            <Link href={`/profile/${author.id}`}>
+            <Link href={`/profiles/${author.id}`}>
                 <Image
                     src={author.profileImageUrl}
                     alt="profile"
@@ -29,7 +29,7 @@ const Post = (props: Post) => {
                     <p className="font-light italic">{author.schoolName}</p>
                 </div>
                 <p className="py-2">{post.content}</p>
-                <Link href={`/subject/${post.subjectName}`} className="w-max self-end rounded border border-blue-500 px-2 py-1">
+                <Link href={`/subjects/${post.subjectName}`} className="w-max self-end rounded border border-blue-500 px-2 py-1">
                     {post.subjectName}
                 </Link>
             </div>

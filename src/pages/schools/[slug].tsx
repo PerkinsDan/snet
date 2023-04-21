@@ -16,15 +16,21 @@ const Profile = ({ feed }: Props) => {
     const router = useRouter();
     const { slug } = router.query;
 
-    feed = feed.filter(({ post }) => post.subjectName === slug);
+    feed = feed.filter((post) => post.author.schoolId === slug);
+
+    const { schoolName } = feed[0]?.author || {
+        schoolName: "School not found",
+    };
 
     return (
         <div className="min-h-screen w-full max-w-2xl">
-            <div className="border border-slate-800 p-8 text-white">
-                <h1 className="text-2xl font-bold ">
-                    {slug}
+            <div className="flex items-center justify-between border border-slate-800 p-8">
+                <Link href="/">
+                    <ArrowUturnLeftIcon className="h-8 w-8 text-white" />
+                </Link>
+                <h1 className="text-center text-2xl font-bold text-white">
+                    {schoolName}
                 </h1>
-                <p>Get support for {slug} or help others by answering their question</p>
             </div>
             <Feed feed={feed} />
         </div>
@@ -108,6 +114,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
                     firsName: author.firstName,
                     lastName: author.lastName,
                     schoolName,
+                    schoolId: authorSchool,
                 },
             };
         })

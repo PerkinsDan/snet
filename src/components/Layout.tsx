@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             { name: "Home", href: "/" },
             { name: "Subjects", href: "/subjects" },
             { name: "Schools", href: "/schools" },
-            { name: "Profile", href: `/profile/${user.id}` },
+            { name: "Profile", href: `/profiles/${user.id}` },
             { name: "Create Post", href: "/create-post" },
         ];
 
@@ -28,7 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <meta name="theme-color" content="#030712" />
                 </Head>
                 <div className="grid w-full grid-cols-1 md:grid-cols-3">
-                    <div className="hidden w-60 flex-col justify-between justify-self-end border border-slate-800 p-4 text-white md:flex">
+                    <div className="sticky top-0 hidden h-screen w-60 flex-col justify-between justify-self-end border border-slate-800 p-4 text-white md:flex">
                         <div className="flex flex-col">
                             <Link
                                 href="/"
@@ -50,7 +50,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             <Profile />
                         </div>
                     </div>
-                    <main className="container flex w-full max-w-2xl flex-col items-center justify-center gap-12 md:col-span-2 justify-self-center md:justify-self-start">
+                    <main className="container flex w-full max-w-2xl flex-col items-center justify-center gap-12 justify-self-center md:col-span-2 md:justify-self-start">
                         {children}
                     </main>
                 </div>
