@@ -8,13 +8,13 @@ import prisma from "../../lib/prisma";
 import { ArrowsRightLeftIcon, PencilIcon } from "@heroicons/react/24/outline";
 import Feed from "../components/Feed";
 import PostCreator from "~/components/PostCreator";
+import Link from "next/link";
 
 type Props = {
     feed: Post[];
 };
 
 const Home = ({ feed }: Props) => {
-    const [showPostCreator, setShowPostCreator] = useState(false);
     const [showPublicPosts, setShowPublicPosts] = useState(true);
     const [showProfile, setShowProfile] = useState(false);
 
@@ -46,7 +46,6 @@ const Home = ({ feed }: Props) => {
                     <Feed feed={privateFeed} />
                 )}
             </div>
-            {showPostCreator && <PostCreator />}
             <div className="sticky bottom-0 flex w-screen justify-between p-6 backdrop-blur backdrop-blur-lg lg:backdrop-blur-none xl:w-full">
                 <div className="relative">
                     <button
@@ -76,16 +75,12 @@ const Home = ({ feed }: Props) => {
                         </div>
                     )}
                 </div>
-                <button
-                    onClick={() => setShowPostCreator(!showPostCreator)}
-                    className={`flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 transition ${
-                        showPostCreator
-                            ? "bg-slate-600 hover:bg-slate-800"
-                            : "bg-blue-500 hover:bg-blue-700"
-                    }`}
+                <Link
+                    href="create-post"
+                    className="bg-blue-500 hover:bg-blue-700 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 transition"
                 >
                     <PencilIcon className="h-6 w-6 text-white" />
-                </button>
+                </Link>
             </div>
         </>
     );

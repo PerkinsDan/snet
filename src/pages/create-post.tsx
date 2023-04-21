@@ -3,40 +3,48 @@ import {
     ArrowUturnLeftIcon,
     QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
+import { useRouter } from "next/router";
 
-const PostCreator = () => {
+const CreatePost = ({}) => {
     const [content, setContent] = useState("");
     const [isPublic, setIsPublic] = useState(true);
-    const [showPostCreator, setShowPostCreator] = useState(true);
     const [toolTip, setToolTip] = useState(false);
+    const [error, setError] = useState("");
+
+    const router = useRouter();
 
     const { user, isSignedIn } = useUser();
     if (!isSignedIn) return null;
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         const body = { content, isPublic, authorId: user.id };
 
-        fetch("/api/post", {
+        const res = await fetch("/api/post", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
-        }).catch((error) => console.error(error));
+        });
 
-        setShowPostCreator(false);
+        const { message } = (await res.json()) as { message: string };
+
+        if (res.status === 200) {
+            await router.push("/home");
+        } else {
+            setError(message);
+        }
     };
-
-    if (!showPostCreator) return null;
 
     return (
         <div
             className={`absolute left-0 top-0 min-h-screen w-full bg-gradient-to-b from-slate-950 to-gray-900`}
         >
-            <button onClick={() => setShowPostCreator(false)}>
+            <Link href="/home">
                 <ArrowUturnLeftIcon className="ml-8 mt-8 h-8 w-8 text-white" />
-            </button>
+            </Link>
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col items-center justify-center gap-8 p-8"
@@ -80,9 +88,14 @@ const PostCreator = () => {
                 >
                     Post
                 </button>
+                {error.length > 0 && (
+                    <div className="w-full rounded border border-red-500 p-4 text-red-500">
+                        {error}
+                    </div>
+                )}
             </form>
         </div>
     );
 };
 
-export default PostCreator;
+export default CreatePost;
