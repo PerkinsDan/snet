@@ -1,52 +1,37 @@
 import { type User } from "@clerk/nextjs/dist/api";
-import { useUser } from "@clerk/nextjs";
-import { type GetServerSideProps } from "next";
-import { useState } from "react";
 import { clerkClient, getAuth } from "@clerk/nextjs/server";
-import prisma from "../../lib/prisma";
-import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
-import Feed from "../components/Feed";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
+import prisma from "lib/prisma";
+import { type GetServerSideProps } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Feed from "~/components/Feed";
 
 type Props = {
     feed: Post[];
 };
 
-const Home = ({ feed }: Props) => {
-    const [showPublicPosts, setShowPublicPosts] = useState(true);
+const Profile = ({ feed }: Props) => {
+    const router = useRouter();
+    const { slug } = router.query;
 
-    const { isSignedIn } = useUser();
-    if (!isSignedIn) return null;
-
-    if (!feed) feed = [];
-
-    const publicFeed = feed.filter(({ post }) => post.public);
-    const privateFeed = feed.filter(({ author }) => author.sameSchool);
+    feed = feed.filter(({ post }) => post.subjectName === slug);
 
     return (
-        <>
-            <div className="min-h-screen w-full">
-                <nav className="background-contrast-50 sticky top-0 flex items-center justify-between border border-slate-800 p-6 backdrop-blur-xl">
-                    <h1 className="text-xl font-bold text-white">
-                        {showPublicPosts ? "Public Feed" : "My School Feed"}
-                    </h1>
-                    <button
-                        onClick={() => setShowPublicPosts(!showPublicPosts)}
-                        className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 transition hover:bg-blue-600"
-                    >
-                        <ArrowsRightLeftIcon className="h-6 w-6 text-white" />
-                    </button>
-                </nav>
-                {showPublicPosts ? (
-                    <Feed feed={publicFeed} />
-                ) : (
-                    <Feed feed={privateFeed} />
-                )}
+        <div className="min-h-screen w-full max-w-2xl">
+            <div className="border border-slate-800 p-8 text-white">
+                <h1 className="text-2xl font-bold ">
+                    {slug}
+                </h1>
+                <p>Get support for {slug} or help others by answering their question</p>
             </div>
-        </>
+            <Feed feed={feed} />
+        </div>
     );
 };
 
-export default Home;
+export default Profile;
 
 const filterUserForClient = (user: User) => {
     return {
@@ -66,11 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         };
     }
 
-    const data = await prisma.post.findMany({
-        orderBy: {
-            createdAt: "desc",
-        },
-    });
+    const data = await prisma.post.findMany({});
 
     // Convert createdAt to ISO string
     const posts = data.map((item) => ({
@@ -127,7 +108,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
                     firsName: author.firstName,
                     lastName: author.lastName,
                     schoolName,
-                    sameSchool: authorSchool === userSchool,
                 },
             };
         })

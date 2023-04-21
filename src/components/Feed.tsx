@@ -29,9 +29,9 @@ const Post = (props: Post) => {
                     <p className="font-light italic">{author.schoolName}</p>
                 </div>
                 <p className="py-2">{post.content}</p>
-                <p className="w-max self-end rounded border border-blue-500 px-2 py-1">
+                <Link href={`/subject/${post.subjectName}`} className="w-max self-end rounded border border-blue-500 px-2 py-1">
                     {post.subjectName}
-                </p>
+                </Link>
             </div>
         </div>
     );
