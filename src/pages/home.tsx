@@ -76,7 +76,7 @@ const Home = ({ feed }: Props) => {
                 </div>
                 <Link
                     href="create-post"
-                    className="bg-blue-500 hover:bg-blue-700 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-md shadow-blue-500/30 transition"
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 bg-blue-500 shadow-md shadow-blue-500/30 transition hover:bg-blue-700"
                 >
                     <PencilIcon className="h-6 w-6 text-white" />
                 </Link>
@@ -125,8 +125,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     ).map(filterUserForClient);
 
     const profiles = await prisma.profile.findMany({});
-
     const schools = await prisma.school.findMany({});
+    const subjects = await prisma.subject.findMany({});
 
     const feed = posts
         .map((post) => {
@@ -152,8 +152,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
                 (school) => school.id === authorSchool
             )?.name;
 
+            const subjectName = subjects.find(
+                (subject) => subject.id === post.subjectId
+            )?.name;
+
             return {
-                post,
+                post: {
+                    ...post,
+                    subjectName,
+                },
                 author: {
                     ...author,
                     firsName: author.firstName,

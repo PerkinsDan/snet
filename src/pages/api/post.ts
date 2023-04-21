@@ -5,10 +5,11 @@ type PostBody = {
     content: string;
     isPublic: boolean;
     authorId: string;
+    subjectId: string;
 }
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
-    const { content, isPublic, authorId } = req.body as PostBody;
+    const { content, isPublic, authorId, subjectId } = req.body as PostBody;
 
     const body = content.trim();
 
@@ -21,6 +22,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             content,
             public: isPublic,
             authorId,
+            subjectId,
         },
     });
 

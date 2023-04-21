@@ -30,16 +30,16 @@ const Profile = ({ feed }: Props) => {
                 <Link href="/">
                     <ArrowUturnLeftIcon className="h-8 w-8 text-white" />
                 </Link>
-                    <h1 className="text-center text-2xl font-bold text-white">
-                        {firstName} {lastName}
-                    </h1>
-                    <Image
-                        src={profileImageUrl}
-                        height={70}
-                        width={70}
-                        alt="Profile picture"
-                        className="rounded-full"
-                    />
+                <h1 className="text-center text-2xl font-bold text-white">
+                    {firstName} {lastName}
+                </h1>
+                <Image
+                    src={profileImageUrl}
+                    height={70}
+                    width={70}
+                    alt="Profile picture"
+                    className="rounded-full"
+                />
             </div>
             <Feed feed={feed} />
         </div>
@@ -82,6 +82,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     ).map(filterUserForClient);
 
     const profiles = await prisma.profile.findMany({});
+    const subjects = await prisma.subject.findMany({});
 
     const feed = posts
         .map((post) => {
@@ -103,8 +104,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
                 return null;
             }
 
+            const subjectName = subjects.find(
+                (subject) => subject.id === post.subjectId
+            )?.name;
+
             return {
-                post,
+                post: {
+                    ...post,
+                    subjectName,
+                },
                 author: {
                     ...author,
                     firsName: author.firstName,

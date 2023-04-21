@@ -4,14 +4,29 @@ import {
     QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, useEffect } from "react";
 import { useRouter } from "next/router";
+import { type GetServerSideProps } from "next";
+import prisma from "../../lib/prisma";
+import Loading from "~/components/Loading";
 
-const CreatePost = ({}) => {
+type Props = {
+    subjects: Subject[];
+};
+
+const CreatePost = ({ subjects }: Props) => {
+    const [loading, setLoading] = useState(false);
     const [content, setContent] = useState("");
     const [isPublic, setIsPublic] = useState(true);
     const [toolTip, setToolTip] = useState(false);
     const [error, setError] = useState("");
+    const [subjectId, setSubjectId] = useState("");
+
+    useEffect(() => {
+        if (subjects[0]) {
+            setSubjectId(subjects[0].id);
+        }
+    }, [subjects]);
 
     const router = useRouter();
 
@@ -21,7 +36,9 @@ const CreatePost = ({}) => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        const body = { content, isPublic, authorId: user.id };
+        setLoading(true);
+
+        const body = { content, isPublic, authorId: user.id, subjectId };
 
         const res = await fetch("/api/post", {
             method: "POST",
@@ -34,9 +51,12 @@ const CreatePost = ({}) => {
         if (res.status === 200) {
             await router.push("/home");
         } else {
+            setLoading(false);
             setError(message);
         }
     };
+
+    if (loading) return <Loading />;
 
     return (
         <div
@@ -82,6 +102,24 @@ const CreatePost = ({}) => {
                         )}
                     </div>
                 </div>
+                <div className="flex items-center gap-8">
+                    <label className="text-white">Subject:</label>
+                    <select
+                        className="w-80 rounded bg-transparent text-white"
+                        value={subjectId}
+                        onChange={(e) => setSubjectId(e.target.value)}
+                    >
+                        {subjects.map((subject) => (
+                            <option
+                                value={subject.id}
+                                key={subject.id}
+                                className="text-black"
+                            >
+                                {subject.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 <button
                     type="submit"
                     className="rounded border border-slate-800 px-4 py-2 text-white hover:border-slate-400"
@@ -99,3 +137,11 @@ const CreatePost = ({}) => {
 };
 
 export default CreatePost;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+    const subjects = await prisma.subject.findMany({});
+
+    return {
+        props: { subjects },
+    };
+};

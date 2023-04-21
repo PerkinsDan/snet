@@ -16,6 +16,8 @@ model Post {
     public    Boolean  @default(true)
     authorId  String
     createdAt DateTime @default(now())
+    Subject   Subject? @relation(fields: [subjectId], references: [id])
+    subjectId String?  @db.ObjectId
 }
 
 model Profile {
@@ -29,4 +31,10 @@ model School {
     id       String    @id @default(auto()) @map("_id") @db.ObjectId
     name     String    @unique
     profiles Profile[]
+}
+
+model Subject {
+    id    String @id @default(auto()) @map("_id") @db.ObjectId
+    name  String @unique
+    posts Post[]
 }

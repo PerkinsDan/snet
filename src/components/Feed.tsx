@@ -10,7 +10,7 @@ const Post = (props: Post) => {
     const { post, author } = props;
 
     return (
-        <div className="flex items-center gap-3 border-b border-slate-800 p-4">
+        <div className="flex gap-3 border-b border-slate-800 p-4">
             <Link href={`/profile/${author.id}`}>
                 <Image
                     src={author.profileImageUrl}
@@ -20,15 +20,18 @@ const Post = (props: Post) => {
                     className="rounded-full"
                 />
             </Link>
-            <div className="flex flex-col w-full">
-                <Link href={`/profile/${author.id}`} className="flex w-full justify-between">
+            <div className="w-full flex flex-col">
+                <div className="flex w-full flex-wrap justify-between">
                     <p>
                         <span className="font-bold">{`${author.firstName} ${author.lastName}`}</span>{" "}
                         · {`${dayjs(post.createdAt).fromNow()} `}
                     </p>
-                    <span className="hidden sm:block">{author.schoolName}</span>
-                </Link>
-                <p>{post.content}</p>
+                    <p className="font-light italic">{author.schoolName}</p>
+                </div>
+                <p className="py-2">{post.content}</p>
+                <p className="w-max self-end rounded border border-blue-500 px-2 py-1">
+                    {post.subjectName}
+                </p>
             </div>
         </div>
     );

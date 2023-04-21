@@ -3,6 +3,7 @@ type Post = {
         id: string;
         content: string;
         authorId: string;
+        subjectName: string;
         public: boolean;
         createdAt: string;
     };
@@ -27,4 +28,10 @@ type School = {
     id: string;
     name: string;
     profiles: Profile[];
+}
+
+type Subject = {
+    id: string;
+    name: string;
+    posts: Post[];
 }
