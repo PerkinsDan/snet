@@ -7,7 +7,6 @@ import { clerkClient, getAuth } from "@clerk/nextjs/server";
 import prisma from "../../lib/prisma";
 import { ArrowsRightLeftIcon, PencilIcon } from "@heroicons/react/24/outline";
 import Feed from "../components/Feed";
-import PostCreator from "~/components/PostCreator";
 import Link from "next/link";
 
 type Props = {
