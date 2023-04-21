@@ -47,7 +47,7 @@ const Home = ({ feed }: Props) => {
                 )}
             </div>
             {showPostCreator && <PostCreator />}
-            <div className="background-blur-200 sticky bottom-0 flex w-full justify-between p-6 backdrop-blur">
+            <div className="sticky bottom-0 flex w-screen justify-between p-6 backdrop-blur backdrop-blur-lg lg:backdrop-blur-none xl:w-full">
                 <div className="relative">
                     <button
                         className="flex items-center justify-center gap-3 rounded-lg border border-slate-800 p-2 shadow shadow-slate-800/50"
