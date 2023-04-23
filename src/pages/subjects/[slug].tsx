@@ -4,6 +4,7 @@ import prisma from "lib/prisma";
 import { type GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Feed from "~/components/Feed";
+import Layout from "~/components/Layout";
 
 type Props = {
     feed: Post[];
@@ -16,15 +17,18 @@ const Profile = ({ feed }: Props) => {
     feed = feed.filter(({ post }) => post.subjectName === slug);
 
     return (
-        <div className="min-h-screen w-full max-w-2xl">
-            <div className="border border-slate-800 p-8 text-white">
-                <h1 className="text-2xl font-bold ">
-                    {slug}
-                </h1>
-                <p>Get support for {slug} or help others by answering their question</p>
+        <Layout>
+            <div className="min-h-screen w-full max-w-2xl">
+                <div className="border border-slate-800 p-8 text-white">
+                    <h1 className="text-2xl font-bold ">{slug}</h1>
+                    <p>
+                        Get support for {slug} or help others by answering their
+                        question
+                    </p>
+                </div>
+                <Feed feed={feed} />
             </div>
-            <Feed feed={feed} />
-        </div>
+        </Layout>
     );
 };
 

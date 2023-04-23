@@ -1,7 +1,7 @@
 import { dark } from "@clerk/themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import { type AppType } from "next/app";
-import Layout from "~/components/Layout";
+import Head from "next/head";
 
 import "~/styles/globals.css";
 
@@ -10,9 +10,13 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 
     return (
         <ClerkProvider appearance={appearance} {...pageProps}>
-            <Layout>
-                <Component {...pageProps} />
-            </Layout>
+            <Head>
+                <title>SNET</title>
+                <meta name="description" content="The best school network" />
+                <link rel="icon" href="/favicon.ico" />
+                <meta name="theme-color" content="#030712" />
+            </Head>
+            <Component {...pageProps} />
         </ClerkProvider>
     );
 };

@@ -6,6 +6,7 @@ import { clerkClient, getAuth } from "@clerk/nextjs/server";
 import prisma from "../../lib/prisma";
 import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
 import Feed from "../components/Feed";
+import Layout from "~/components/Layout";
 
 type Props = {
     feed: Post[];
@@ -23,7 +24,7 @@ const Home = ({ feed }: Props) => {
     const privateFeed = feed.filter(({ author }) => author.sameSchool);
 
     return (
-        <>
+        <Layout>
             <div className="min-h-screen w-full">
                 <nav className="background-contrast-50 sticky top-0 flex items-center justify-between border border-slate-800 p-6 backdrop-blur-xl">
                     <h1 className="text-xl font-bold text-white">
@@ -42,7 +43,7 @@ const Home = ({ feed }: Props) => {
                     <Feed feed={privateFeed} />
                 )}
             </div>
-        </>
+        </Layout>
     );
 };
 
