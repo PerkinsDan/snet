@@ -51,7 +51,7 @@ export default async function handle(
 
             return res.status(200).json(post);
         } catch (err) {
-            return res.status(500).json({ message: err.message });
+            return res.status(500).json({ message: "Server error" });
         }
     }
 }
