@@ -1,6 +1,7 @@
 import { getAuth, withClerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import prisma from "lib/prisma";
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || "";
 
@@ -10,6 +11,22 @@ const isPublic = (path: string) => {
     return publicPaths.find((x) =>
         path.match(new RegExp(`^${x}$`.replace("*$", "($|/)")))
     );
+};
+
+const isAdmin = async (userId: string) => {
+    const res = await fetch(`${NEXT_PUBLIC_URL}/api/admin`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+    });
+
+    if (res.status === 401) {
+        return NextResponse.redirect(`${NEXT_PUBLIC_URL}/home`);
+    }
+
+    return NextResponse.next();
 };
 
 export default withClerkMiddleware((request: NextRequest) => {
@@ -24,8 +41,12 @@ export default withClerkMiddleware((request: NextRequest) => {
     if (isPublic(request.nextUrl.pathname)) {
         return NextResponse.next();
     }
-    // if the user is not signed in redirect them to the sign in page.
 
+    if (request.nextUrl.pathname === "/admin" && userId) {
+        return isAdmin(userId).catch((err) => console.error(err));
+    }
+
+    // if the user is not signed in redirect them to the sign in page.
     if (!userId) {
         // redirect the users to /pages/sign-in/[[...index]].ts
 

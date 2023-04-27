@@ -22,6 +22,7 @@ model Post {
 
 model Profile {
     id       String @id @default(auto()) @map("_id") @db.ObjectId
+    admin   Boolean @default(false)
     school   School @relation(fields: [schoolId], references: [id])
     schoolId String @db.ObjectId
     userId   String @unique
