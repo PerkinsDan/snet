@@ -1,13 +1,29 @@
 import Link from "next/link";
 import Image from "next/image";
 import dayjs from "../../lib/dayjs";
+import { useUser } from "@clerk/nextjs";
 
 type Props = {
     feed: Post[];
 };
 
 const Post = (props: Post) => {
+    const { user } = useUser();
+    if (!user) return null;
     const { post, author } = props;
+
+    const handleSubmit = async () => {
+        const res = await fetch(`/api/post/?id=${post.id}`, {
+            method: "DELETE",
+        });
+
+        if (res.status === 200) {
+            window.location.reload();
+        } else {
+            const { message } = (await res.json()) as { message: string };
+            console.log(message);
+        }
+    };
 
     return (
         <div className="flex gap-3 border-b border-slate-800 p-4">
@@ -33,6 +49,14 @@ const Post = (props: Post) => {
                     {post.subjectName}
                 </Link>
             </div>
+            {(user.id === author.id) && (
+            <button
+                className="py-auto bg-red-500 px-4 hover:bg-red-600"
+                onClick={handleSubmit}
+            >
+                X
+            </button>
+            )}
         </div>
     );
 };
