@@ -17,6 +17,10 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         return res.status(400).json({ message: 'Content is required' });
     }
 
+    if (body.length > 600) {
+        return res.status(400).json({ message: 'Content is too long' });
+    }
+
     const result = await prisma.post.create({
         data: {
             content,

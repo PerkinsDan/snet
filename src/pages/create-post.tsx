@@ -22,6 +22,7 @@ const CreatePost = ({ subjects }: Props) => {
     const [toolTip, setToolTip] = useState(false);
     const [error, setError] = useState("");
     const [subjectId, setSubjectId] = useState("");
+    const [charCount, setCharCount] = useState(0);
 
     useEffect(() => {
         if (subjects[0]) {
@@ -74,12 +75,19 @@ const CreatePost = ({ subjects }: Props) => {
                     <h1 className="text-2xl font-bold text-white">
                         Create your post:
                     </h1>
-                    <textarea
-                        onChange={(e) => setContent(e.target.value)}
-                        value={content}
-                        placeholder="What's your question?"
-                        className="h-40 w-full max-w-2xl border border-slate-800 bg-transparent p-2 text-white outline-none"
-                    />
+                    <div className="w-full max-w-2xl">
+                        <textarea
+                            onChange={(e) => {
+                                setContent(e.target.value);
+                                setCharCount(e.target.value.length);
+                            }}
+                            maxLength={600}
+                            value={content}
+                            placeholder="What's your question?"
+                            className="h-40 w-full border border-slate-800 bg-transparent p-2 text-white outline-none"
+                        />
+                        <p className="text-white">{charCount} / 600</p>
+                    </div>
                     <div className="relative flex items-center gap-2">
                         <input
                             type="checkbox"
