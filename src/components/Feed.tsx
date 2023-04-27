@@ -26,36 +26,41 @@ const Post = (props: Post) => {
     };
 
     return (
-        <div className="flex gap-3 border-b border-slate-800 p-4">
-            <Link href={`/profiles/${author.id}`}>
-                <Image
-                    src={author.profileImageUrl}
-                    alt="profile"
-                    height={50}
-                    width={50}
-                    className="rounded-full"
-                />
-            </Link>
-            <div className="w-full flex flex-col">
-                <div className="flex w-full flex-wrap justify-between">
-                    <p>
-                        <span className="font-bold">{`${author.firstName} ${author.lastName}`}</span>{" "}
-                        · {`${dayjs(post.createdAt).fromNow()} `}
-                    </p>
-                    <p className="font-light italic">{author.schoolName}</p>
-                </div>
-                <p className="py-2">{post.content}</p>
-                <Link href={`/subjects/${post.subjectName}`} className="w-max self-end rounded border border-blue-500 px-2 py-1">
-                    {post.subjectName}
+        <div className="flex w-full border-b border-slate-800">
+            <div className="flex w-full gap-3 p-4">
+                <Link href={`/profiles/${author.id}`}>
+                    <Image
+                        src={author.profileImageUrl}
+                        alt="profile"
+                        height={50}
+                        width={50}
+                        className="rounded-full"
+                    />
                 </Link>
+                <div className="flex w-full flex-col">
+                    <div className="flex w-full flex-wrap justify-between">
+                        <p>
+                            <span className="font-bold">{`${author.firstName} ${author.lastName}`}</span>{" "}
+                            · {`${dayjs(post.createdAt).fromNow()} `}
+                        </p>
+                        <p className="font-light italic">{author.schoolName}</p>
+                    </div>
+                    <p className="py-2 whitespace-pre-line">{post.content}</p>
+                    <Link
+                        href={`/subjects/${post.subjectName}`}
+                        className="w-max self-end rounded border border-blue-500 px-2 py-1"
+                    >
+                        {post.subjectName}
+                    </Link>
+                </div>
             </div>
-            {(user.id === author.id) && (
-            <button
-                className="py-auto bg-red-500 px-4 hover:bg-red-600"
-                onClick={handleSubmit}
-            >
-                X
-            </button>
+            {user.id === author.id && (
+                <button
+                    className="py-auto bg-red-500 px-4 hover:bg-red-600"
+                    onClick={handleSubmit}
+                >
+                    X
+                </button>
             )}
         </div>
     );
