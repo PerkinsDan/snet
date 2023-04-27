@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         { name: "Subjects", href: "/subjects" },
         { name: "Schools", href: "/schools" },
         { name: "Profile", href: `/profiles/${user.id}` },
-        { name: "Create Post", href: "/create-post" },
+        { name: "Create Post", href: "/create-post", className: "bg-blue-500" },
     ];
 
     return (
@@ -29,7 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             <Link
                                 href={link.href}
                                 key={link.name}
-                                className="h-max px-4 py-5 text-lg"
+                                className={`h-max px-4 py-5 text-lg rounded-lg ${link.className || ""}`}
                             >
                                 {link.name}
                             </Link>
