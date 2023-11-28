@@ -2,7 +2,7 @@
 
 A project made for PGS extend (a school based social media)
 
-Go to the live app: [snet.vercel.app](https://snet.vercel.app/)
+Go to the live app: [snet.danperkins.dev](https://snet.danperkins.dev/)
 
 ## What do I do if I find an error?
 
